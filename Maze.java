@@ -1,132 +1,149 @@
+/*
+* Maze
+*
+* maze2.12
+*
+* 2018.02.12 Mon
+*
+* @author ì›ìˆ˜í˜„
+*
+* 
+*/
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
-
 /**
- * <¹Ì·Î¿¡¼­ °¡´ÉÇÑ ¸ğµç °æ·Î Ã£±â>
- * ÁÖ¾îÁø ¹Ì·ÎÀÇ ½ÃÀÛ À§Ä¡¿¡¼­ Å»Ãâ À§Ä¡±îÁö ¿©·¯ °³ÀÇ °æ·Î°¡ Á¸ÀçÇÒ ¶§ 
- * »çÀÌÅ¬À» Çü¼ºÇÏÁö ¾Ê´Â °¡´ÉÇÑ ¸ğµç °æ·Î¸¦ Ã£´Â´Ù.
- * ÁÖ¾îÁø ÆÄÀÏÀÇ Ã¹Â° ÁÙÀº »ç°¢ÇüÀ¸·Î ÁÖ¾îÁø ¹Ì·ÎÀÇ Çà°ú ¿­ÀÇ ¼ö
- * ´ÙÀ½Àº ¹Ì·Î, ¹Ì·Î¿¡¼­
- * # : Åë°úÇÒ ¼ö ¾øÀ½
- * ' '(½ºÆäÀÌ½º) : Åë°ú °¡´É
- * S : ½ÃÀÛÁ¡
- * E : Å»ÃâÁ¡
- * @author ¿ø¼öÇö
- *
- */
+* google java coding style guide* <ë¯¸ë¡œì—ì„œ ê°€ëŠ¥í•œ ëª¨ë“  ê²½ë¡œ ì°¾ê¸°> 
+* ì£¼ì–´ì§„ ë¯¸ë¡œì˜ ì‹œì‘ ìœ„ì¹˜ì—ì„œ íƒˆì¶œ ìœ„ì¹˜ê¹Œì§€ ì—¬ëŸ¬ ê°œì˜ ê²½ë¡œê°€ ì¡´ì¬í•  ë•ŒÂ  
+* ì‚¬ì´í´ì„ í˜•ì„±í•˜ì§€ ì•ŠëŠ” ê°€ëŠ¥í•œ ëª¨ë“  ê²½ë¡œë¥¼ ì°¾ëŠ”ë‹¤. 
+* ì£¼ì–´ì§„ íŒŒì¼ì˜ ì²«ì§¸ ì¤„ì€ ì‚¬ê°í˜•ìœ¼ë¡œ ì£¼ì–´ì§„ ë¯¸ë¡œì˜ í–‰ê³¼ ì—´ì˜ ìˆ˜ 
+* ë‹¤ìŒì€ ë¯¸ë¡œ, ë¯¸ë¡œì—ì„œ 
+* # : í†µê³¼í•  ìˆ˜ ì—†ìŒ 
+* ' '(ìŠ¤í˜ì´ìŠ¤) : í†µê³¼ ê°€ëŠ¥ 
+* S : ì‹œì‘ì 
+* E : íƒˆì¶œì  
+*/
 public class Maze {
 
-	//ÇÊµå
-	private String[][] maze;	// ¹Ì·Î
-	private int row;	//Çà
-	private int col;	//¿­
-	private int[] start = new int[2]; //½ºÅ¸Æ® ÁöÁ¡À» ÀúÀåÇÏ´Â ¹è¿­
-	private int[] exit = new int[2];  //Ãâ±¸ ÁöÁ¡À» ÀúÀåÇÏ´Â ¹è¿­
+	//í•„ë“œ
+	private String[][] maze;	// ë¯¸ë¡œ
+	private int row;	//í–‰
+	private int col;	//ì—´
+	private int[] start = new int[2]; //ìŠ¤íƒ€íŠ¸ ì§€ì ì„ ì €ì¥í•˜ëŠ” ë°°ì—´
+	private int[] exit = new int[2];  //ì¶œêµ¬ ì§€ì ì„ ì €ì¥í•˜ëŠ” ë°°ì—´
 
-	int current_X;	//ÇöÀç À§Ä¡ xÁÂÇ¥
-	int current_Y;	//ÇöÀç À§Ä¡ yÁÂÇ¥
+	int current_X;	//í˜„ì¬ ìœ„ì¹˜ xì¢Œí‘œ
+	int current_Y;	//í˜„ì¬ ìœ„ì¹˜ yì¢Œí‘œ
 
-	private int distance;	//Áö³ª¿Â ±æÀÇ °³¼ö.
-	private int paths=0;	//°æ·ÎÀÇ °³¼ö. (number of paths)
-	private ArrayList<String> coordinateOfPaths = new ArrayList<String>();	//Áö³ª¿Â ±æÀÇ ÁÂÇ¥µéÀ» ÀúÀåÇÏ´Â list ex)(1,2)
+	private int distance;	//ì§€ë‚˜ì˜¨ ê¸¸ì˜ ê°œìˆ˜.
+	private int paths=0;	//ê²½ë¡œì˜ ê°œìˆ˜. (number of paths)
+	private ArrayList<String> coordinateOfPaths = new ArrayList<String>();	//ì§€ë‚˜ì˜¨ ê¸¸ì˜ ì¢Œí‘œë“¤ì„ ì €ì¥í•˜ëŠ” list ex)(1,2)
 
-	//¸Ş¼Òµå
+	//ë©”ì†Œë“œ
 	/**
-	 * ¹Ì·Î¿¡¼­ °æ·Î¸¦ Ã£¾Æ Ã£Àº °æ·Î¸¦ printMaze¸¦ ÀÌ¿ëÇØ º¸¿©ÁÖ°í
-	 * ÀÌµ¿ÇÑ ÁÂÇ¥¿Í ÀÌµ¿È½¼ö¸¦Ãâ·ÂÇØÁØ´Ù. (Àç±Í ÇÔ¼ö)
-	 * @param current_X ÇöÀç XÁÂÇ¥
-	 * @param current_Y ÇöÀç YÁÂÇ¥
+	 * ë¯¸ë¡œì—ì„œ ê²½ë¡œë¥¼ ì°¾ì•„ ì°¾ì€ ê²½ë¡œë¥¼ printMazeë¥¼ ì´ìš©í•´ ë³´ì—¬ì£¼ê³ 
+	 * ì´ë™í•œ ì¢Œí‘œì™€ ì´ë™íšŸìˆ˜ë¥¼ì¶œë ¥í•´ì¤€ë‹¤. (ì¬ê·€ í•¨ìˆ˜)
+	 * @param current_X í˜„ì¬ Xì¢Œí‘œ
+	 * @param current_Y í˜„ì¬ Yì¢Œí‘œ
 	 */
 	public void findMaze(int current_X, int current_Y){
 
-		//Ãâ±¸¸¦ Ã£¾ÒÀ» ¶§.
-		//°æ·ÎÀÇ °³¼ö¸¦ ÀúÀå.(path++)
-		//list¿¡ ÀÖ´Â ÁÂÇ¥µé(Áö³ª¿Â ±æ)À» Ãâ·ÂÇØ ÁØ´Ù.
+		//ì¶œêµ¬ë¥¼ ì°¾ì•˜ì„ ë•Œ.
+		//ê²½ë¡œì˜ ê°œìˆ˜ë¥¼ ì €ì¥.(path++)
+		//listì— ìˆëŠ” ì¢Œí‘œë“¤(ì§€ë‚˜ì˜¨ ê¸¸)ì„ ì¶œë ¥í•´ ì¤€ë‹¤.
 		if(!coordinateOfPaths.isEmpty()) {
-			if(current_X == exit[0] && current_Y == exit[1]){	//Ãâ±¸¸¦ Ã£¾ÒÀ» ¶§.
-				this.paths++;	//°æ·Î °³¼ö Ãß°¡.
-				getDistance();	//ÀÌµ¿ È½¼ö¿Í ÀÌµ¿ ÁÂÇ¥µéÀ» Ãâ·Â.
-				maze[exit[0]][exit[1]]="E"; //.À¸·Î Ç¥½ÃµÇ¾îÀÖÀ» Ãâ±¸¸¦ E·Î ¸¸µé¾îÁØ´Ù.
-				printMaze();				//¹Ì·Î Ãâ·Â
+			if(current_X == exit[0] && current_Y == exit[1]){	//ì¶œêµ¬ë¥¼ ì°¾ì•˜ì„ ë•Œ.
+				this.paths++;	//ê²½ë¡œ ê°œìˆ˜ ì¶”ê°€.
+				getDistance();	//ì´ë™ íšŸìˆ˜ì™€ ì´ë™ ì¢Œí‘œë“¤ì„ ì¶œë ¥.
+				maze[exit[0]][exit[1]]="E"; //.ìœ¼ë¡œ í‘œì‹œë˜ì–´ìˆì„ ì¶œêµ¬ë¥¼ Eë¡œ ë§Œë“¤ì–´ì¤€ë‹¤.
+				printMaze();				//ë¯¸ë¡œ ì¶œë ¥
 			}
 		}
 
-		//½ÃÀÛÀ§Ä¡°¡ ¾Æ´Ï¶ó¸é '.'°ªÀ» ³Ö¾îÁØ´Ù.
+		//ì‹œì‘ìœ„ì¹˜ê°€ ì•„ë‹ˆë¼ë©´ '.'ê°’ì„ ë„£ì–´ì¤€ë‹¤.
 		if(!maze[current_X][current_Y].equals("S")){
 			maze[current_X][current_Y] = ".";
-			//Áö³ª°£ ÁÂÇ¥ ÀúÀå
+			//ì§€ë‚˜ê°„ ì¢Œí‘œ ì €ì¥
 			coordinateOfPaths.add("("+(current_X+1)+","+(current_Y+1)+")"+" ");
 		}
-		// ±æÀÌ ÀÖÀ¸¸é ÀÌµ¿ÇÏ´Â ºÎºĞ
-		//»ó
-		if(current_X>=1 && current_X < row && canMove(current_X-1, current_Y))
+		// ê¸¸ì´ ìˆìœ¼ë©´ ì´ë™í•˜ëŠ” ë¶€ë¶„
+		//ìƒ
+		if(current_X>=1 && current_X < row && canMove(current_X-1, current_Y)){
 				findMaze(current_X-1, current_Y);
-		//ÇÏ
-		if(current_X>=0 && current_X < row-1 && canMove(current_X+1, current_Y))
+		}
+		//í•˜
+		if(current_X>=0 && current_X < row-1 && canMove(current_X+1, current_Y)){
 				findMaze(current_X+1, current_Y);
-		//ÁÂ
-		if(current_Y>=1 && current_Y<col && canMove(current_X, current_Y-1))
+		}
+		//ì¢Œ
+		if(current_Y>=1 && current_Y<col && canMove(current_X, current_Y-1)){
 				findMaze(current_X, current_Y-1);
-		//¿ì
-		if(current_Y>=0 && current_Y<col-1 && canMove(current_X, current_Y+1))
+		}
+		//ìš°
+		if(current_Y>=0 && current_Y<col-1 && canMove(current_X, current_Y+1)){
 				findMaze(current_X, current_Y+1);
+		}
 
-		//±æÀÌ ¾ø¾î¼­ µÚ·Î µ¹¾Æ¿ÔÀ» ¶§.
-		maze[current_X][current_Y] = " "; //µÚ·Î µ¹¾Æ¿À¸é ±× Àå¼Ò¸¦ ´Ù½Ã °ø¹éÀ¸·Î ¸¸µé¾îÁØ´Ù.
-		if(!coordinateOfPaths.isEmpty())  
-			coordinateOfPaths.remove(coordinateOfPaths.size()-1);//Áö³ª¿Â ±æµéÀÇ ÁÂÇ¥¿¡¼­µµ ¾ø¾ÖÁÜ
+		//ê¸¸ì´ ì—†ì–´ì„œ ë’¤ë¡œ ëŒì•„ì™”ì„ ë•Œ.
+		maze[current_X][current_Y] = " "; //ë’¤ë¡œ ëŒì•„ì˜¤ë©´ ê·¸ ì¥ì†Œë¥¼ ë‹¤ì‹œ ê³µë°±ìœ¼ë¡œ ë§Œë“¤ì–´ì¤€ë‹¤.
+		if(!coordinateOfPaths.isEmpty())  {
+			coordinateOfPaths.remove(coordinateOfPaths.size()-1);//ì§€ë‚˜ì˜¨ ê¸¸ë“¤ì˜ ì¢Œí‘œì—ì„œë„ ì—†ì• ì¤Œ
+		}
 	}
 
 	/**
-	 * ¹Ì·ÎÃ£±â¸¦ ¼öÇàÇÏ°í °æ·Î¸¦ Ã£À» ¶§¸¶´Ù °æ·ÎÀÇ °³¼ö(path)Áõ°¡ ½ÃÄÑÁØ´Ù. (Àç±Í ÇÔ¼ö)
-	 * @param current_X ÇöÀç XÁÂÇ¥
-	 * @param current_Y ÇöÀç YÁÂÇ¥
+	 * ë¯¸ë¡œì°¾ê¸°ë¥¼ ìˆ˜í–‰í•˜ê³  ê²½ë¡œë¥¼ ì°¾ì„ ë•Œë§ˆë‹¤ ê²½ë¡œì˜ ê°œìˆ˜(path)ì¦ê°€ ì‹œì¼œì¤€ë‹¤. (ì¬ê·€ í•¨ìˆ˜)
+	 * @param current_X í˜„ì¬ Xì¢Œí‘œ
+	 * @param current_Y í˜„ì¬ Yì¢Œí‘œ
 	 */
 	public void findPaths(int current_X, int current_Y){
-		//½ÃÀÛÀ§Ä¡°¡ ¾Æ´Ï¶ó¸é '.'°ªÀ» ³Ö¾îÁØ´Ù.
+		//ì‹œì‘ìœ„ì¹˜ê°€ ì•„ë‹ˆë¼ë©´ '.'ê°’ì„ ë„£ì–´ì¤€ë‹¤.
 		if(!maze[current_X][current_Y].equals("S")){
 			maze[current_X][current_Y] = "."; 
 		}
 		
-		//Ãâ±¸¸¦ Ã£¾ÒÀ» ¶§.
-		//Ãâ±¸¸¦ Ã£À¸¸é °æ·Î ÀúÀå.
+		//ì¶œêµ¬ë¥¼ ì°¾ì•˜ì„ ë•Œ.
+		//ì¶œêµ¬ë¥¼ ì°¾ìœ¼ë©´ ê²½ë¡œ ì €ì¥.
 		if(current_X == exit[0] && current_Y == exit[1]){
 			this.paths++;
-			maze[exit[0]][exit[1]]="E"; //.À¸·Î Ç¥½ÃµÇ¾îÀÖÀ» Ãâ±¸¸¦ E·Î ¸¸µé¾îÁØ´Ù.
+			maze[exit[0]][exit[1]]="E"; //.ìœ¼ë¡œ í‘œì‹œë˜ì–´ìˆì„ ì¶œêµ¬ë¥¼ Eë¡œ ë§Œë“¤ì–´ì¤€ë‹¤.
 		}
-		// ±æÀÌ ÀÖÀ¸¸é ÀÌµ¿ÇÏ´Â ºÎºĞ
-		//»ó
-		if(current_X>=1 && current_X < row && canMove(current_X-1, current_Y))
+		// ê¸¸ì´ ìˆìœ¼ë©´ ì´ë™í•˜ëŠ” ë¶€ë¶„
+		//ìƒ
+		if(current_X>=1 && current_X < row && canMove(current_X-1, current_Y)){
 				findPaths(current_X-1, current_Y);
-		//ÇÏ
-		if(current_X>=0 && current_X < row-1 && canMove(current_X+1, current_Y))
+		}
+		//í•˜
+		if(current_X>=0 && current_X < row-1 && canMove(current_X+1, current_Y)){
 				findPaths(current_X+1, current_Y);
-		//ÁÂ
-		if(current_Y>=1 && current_Y<col && canMove(current_X, current_Y-1))
+		}
+		//ì¢Œ
+		if(current_Y>=1 && current_Y<col && canMove(current_X, current_Y-1)){
 				findPaths(current_X, current_Y-1);
-		//¿ì
-		if(current_Y>=0 && current_Y<col-1 && canMove(current_X, current_Y+1))
+		}
+		//ìš°
+		if(current_Y>=0 && current_Y<col-1 && canMove(current_X, current_Y+1)){
 				findPaths(current_X, current_Y+1);
-
-		//±æÀÌ ¾ø¾î¼­ µÚ·Î µ¹¾Æ¿ÔÀ» ¶§.
-		maze[current_X][current_Y] = " ";	//µÚ·Î µ¹¾Æ¿À¸é ±× Àå¼Ò¸¦ ´Ù½Ã °ø¹éÀ¸·Î ¸¸µé¾îÁØ´Ù.
+		}	
+		//ê¸¸ì´ ì—†ì–´ì„œ ë’¤ë¡œ ëŒì•„ì™”ì„ ë•Œ.
+		maze[current_X][current_Y] = " ";	//ë’¤ë¡œ ëŒì•„ì˜¤ë©´ ê·¸ ì¥ì†Œë¥¼ ë‹¤ì‹œ ê³µë°±ìœ¼ë¡œ ë§Œë“¤ì–´ì¤€ë‹¤.
 	}
 	
 	/**
-	 * ¹Ì·Î¿¡¼­ ÀÌµ¿ÇÒ ¼ö ÀÖ´Â ºÎºĞ(°ø¹é°ú E)ÀÎÁö ¾Æ´ÑÁö¸¦ °áÁ¤ÇØÁÖ´Â ¸Ş¼Òµå
-	 * @param current_X ÀÌµ¿ÇÏ·Á°í ÇÏ´Â XÁÂÇ¥
-	 * @param current_Y ÀÌµ¿ÇÏ·Á°í ÇÏ´Â YÁÂÇ¥
-	 * @return ÀÌµ¿ÇÒ¼ö ÀÖÀ¸¸é true, ¾Æ´Ï¸é false
+	 * ë¯¸ë¡œì—ì„œ ì´ë™í•  ìˆ˜ ìˆëŠ” ë¶€ë¶„(ê³µë°±ê³¼ E)ì¸ì§€ ì•„ë‹Œì§€ë¥¼ ê²°ì •í•´ì£¼ëŠ” ë©”ì†Œë“œ
+	 * @param current_X ì´ë™í•˜ë ¤ê³  í•˜ëŠ” Xì¢Œí‘œ
+	 * @param current_Y ì´ë™í•˜ë ¤ê³  í•˜ëŠ” Yì¢Œí‘œ
+	 * @return ì´ë™í• ìˆ˜ ìˆìœ¼ë©´ true, ì•„ë‹ˆë©´ false
 	 */
 	private boolean canMove(int current_X, int current_Y){
-		if(maze[current_X][current_Y].equals(" ") || maze[current_X][current_Y].equals("E"))
+		if(maze[current_X][current_Y].equals(" ") || maze[current_X][current_Y].equals("E")){
 			return true;
+		}
 		return false;
 	}
 
-	//ÆÄÀÏ¿¡¼­ ¹Ì·Î¸¦ ¹Ş¾Æ¿Í¼­ ¹Ì·Î(maze)¸¦ ¸¸µé¾îÁÖ´Â ¸Ş¼Òµå.
+	//íŒŒì¼ì—ì„œ ë¯¸ë¡œë¥¼ ë°›ì•„ì™€ì„œ ë¯¸ë¡œ(maze)ë¥¼ ë§Œë“¤ì–´ì£¼ëŠ” ë©”ì†Œë“œ.
 	public void makeMaze(File file) throws FileNotFoundException{
 		Scanner in = new Scanner(file);
 		row = in.nextInt();
@@ -143,7 +160,7 @@ public class Maze {
 		in.close();
 	}
 
-	//¹Ì·Î¸¦ Ãâ·ÂÇÏ´Â ¸Ş¼Òµå
+	//ë¯¸ë¡œë¥¼ ì¶œë ¥í•˜ëŠ” ë©”ì†Œë“œ
 	public void printMaze(){
 		for(int i=0; i<row; i++){
 			for(int j =0; j<col; j++){
@@ -154,7 +171,7 @@ public class Maze {
 		System.out.println();
 	}
 
-	//½ÃÀÛ ÁöÁ¡°ú Ãâ±¸ÁöÁ¡À» ¾Ë¾Æ³»´Â ¸Ş¼Òµå
+	//ì‹œì‘ ì§€ì ê³¼ ì¶œêµ¬ì§€ì ì„ ì•Œì•„ë‚´ëŠ” ë©”ì†Œë“œ
 	public void StartAndExit(){
 		for(int i = 0 ; i<row; i++){
 			for(int j = 0; j<col; j++){
@@ -168,24 +185,25 @@ public class Maze {
 				}
 			}
 		}
-		//ÇöÀç À§Ä¡¿¡ Ã¹ ½ÃÀÛÁ¡À» ÁöÁ¤ÇØ ÁØ´Ù.
+		//í˜„ì¬ ìœ„ì¹˜ì— ì²« ì‹œì‘ì ì„ ì§€ì •í•´ ì¤€ë‹¤.
 		this.current_X = start[0];	
 		this.current_Y = start[1];
 	}
 
-	//°æ·ÎÀÇ °³¼ö¸¦ Ãâ·ÂÇÏ´Â ¸Ş¼Òµå
+	//ê²½ë¡œì˜ ê°œìˆ˜ë¥¼ ì¶œë ¥í•˜ëŠ” ë©”ì†Œë“œ
 	public void getPath(){
 		System.out.println("number of Paths : "+ paths);
 		System.out.println();
 	}
 
-	//Áö³ª¿Â ÁÂÇ¥µé°ú (coordinateOfPaths)
-	//¿Í ÀÌµ¿È½¼ö(distance)¸¦ Ãâ·ÂÇÏ´Â ¸Ş¼Òµå
+	//ì§€ë‚˜ì˜¨ ì¢Œí‘œë“¤ê³¼ (coordinateOfPaths)
+	//ì™€ ì´ë™íšŸìˆ˜(distance)ë¥¼ ì¶œë ¥í•˜ëŠ” ë©”ì†Œë“œ
 	public void getDistance(){
 		distance = coordinateOfPaths.size();
-		System.out.print("Distance : "+ distance+"\t");	//ÀÌµ¿È½¼ö Ãâ·Â
-		for(int i = 0; i<coordinateOfPaths.size(); i++)
-			System.out.print(coordinateOfPaths.get(i)+" ");	// Áö³ª¿Â ÁÂÇ¥ Ãâ·Â
+		System.out.print("Distance : "+ distance+"\t");	//ì´ë™íšŸìˆ˜ ì¶œë ¥
+		for(int i = 0; i<coordinateOfPaths.size(); i++){
+			System.out.print(coordinateOfPaths.get(i)+" ");	// ì§€ë‚˜ì˜¨ ì¢Œí‘œ ì¶œë ¥
+		}
 		System.out.println();
 	}
 }
